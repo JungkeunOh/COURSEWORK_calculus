@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>함수–도함수 탐색기 – 선박미적분학</title>
+<style>
+.xp{--fs:14px;font-size:var(--fs);color:#222;font-family:"Gulim","굴림","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+.xp *{box-sizing:border-box}
+.xp-wrap{width:100%;background:#fffff0;border:2px solid #330033;border-radius:6px;overflow:hidden}
+.xp-bar{background:#f0f0c8;border-bottom:1px solid #cccc99;padding:5px 8px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.xp-row{display:contents}
+.xp-l{font-weight:700;color:#330033;white-space:nowrap}
+.xp-t{flex:1 1 160px;min-width:110px;max-width:300px;height:26px;border:1px solid #888;border-radius:4px;padding:0 6px;font:inherit;font-family:Consolas,monospace;background:#fff}
+.xp-n{width:72px;height:26px;border:1px solid #888;border-radius:4px;padding:0 4px;font:inherit;background:#fff}
+.xp-s{height:26px;border:1px solid #888;border-radius:4px;font:inherit;background:#fff;max-width:200px}
+.xp-b{white-space:nowrap;height:26px;padding:0 10px;border:1px solid #330033;border-radius:4px;background:#fff;color:#330033;font:inherit;cursor:pointer}
+.xp-b:hover{background:#ececc0}
+.xp-b.pri{background:#330033;color:#fff}
+.xp-b.sm{padding:0 8px}
+.xp-c{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;cursor:pointer}
+.xp-r{flex:0 1 190px;min-width:90px;accent-color:#330033}
+.xp-rh{flex:0 1 150px}
+.xp-hrow{display:inline-flex;align-items:center;gap:6px}
+.xp-v{min-width:48px;font-weight:700;color:#330033}
+.xp-err{color:#c9211e;font-weight:700}
+.xp-cv{width:100%;position:relative;line-height:0;background:#fffff0}
+.xp-cv canvas{width:100%;display:block;touch-action:none;cursor:crosshair}
+.xp-info{padding:5px 10px 7px;line-height:1.45;border-top:1px solid #cccc99;background:#fafae6}
+.xp-i1{font-size:1.04em}
+.xp-hl{color:#c9211e;font-weight:700}
+.xp-t0{font-family:Consolas,monospace;color:#b25a00;font-weight:700}
+.xp-tb{border-collapse:collapse;margin:3px 0;font-size:.92em}
+.xp-tb th,.xp-tb td{border:1px solid #b2b2b2;padding:1px 6px;text-align:center;background:#fff}
+.xp-tb th{background:#cccc99}
+.xp-vd{display:inline-block;margin-top:2px;padding:2px 8px;border-radius:4px;font-weight:700}
+.xp-vd.ok{background:#e3f3df;color:#17660a}.xp-vd.no{background:#fbe3e1;color:#a01512}
+.xp-vd small{font-weight:400;color:#333}
+.xp-ans{margin-top:2px}
+.xp-fm{margin-top:3px;font-family:Consolas,monospace}
+.xp-fm small{font-family:inherit;color:#555;display:block}
+
+html,body{margin:0;background:#ffffe1;font-family:"Gulim","굴림","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#222}
+header{background:#cccc99;border-bottom:3px solid #330033;padding:10px 14px}
+header h1{margin:0;font-size:22px;color:#330033}
+header p{margin:2px 0 0;font-size:13px;color:#330033}
+main{max-width:1040px;margin:0 auto;padding:10px 10px 30px}
+.xp{--fs:15px}
+details.how{margin:0 0 8px;background:#fffff0;border:1px solid #cccc99;border-radius:6px;padding:4px 12px;font-size:14px;line-height:1.5}
+details.how summary{cursor:pointer;font-weight:700;color:#330033}
+details.how li{margin:2px 0}
+@media (max-width:640px){.xp{--fs:13px}header h1{font-size:18px}}
+</style></head><body>
+<header><h1>함수–도함수 탐색기</h1><p>선박미적분학 · 제3장 미분 · 손으로 푼 뒤 그래프로 확인하는 도구 (채점·저장 없음)</p></header>
+<main>
+<details class="how" open><summary>사용법</summary><ul>
+<li><b>그래프를 누르거나 끌면</b> 점 a 가 움직이고, 그 점의 <b>접선(주황)</b>과 기울기 f′(a) 가 나타납니다. 위의 <b>f′ 패널</b>이 바로 ‘기울기들을 모은 그래프’입니다.</li>
+<li><b>할선</b>을 켜고 h 를 줄여(▶ h→0) 평균변화율이 미분계수로 가까워지는 모습을 볼 수 있습니다.</li>
+<li><b>f′ 숨기고 직접 그리기</b>: 접선 기울기를 읽어 f′ 의 모양을 먼저 그려 본 뒤 [정답 f′ 보기]로 비교하세요.</li>
+<li><b>내 답 g(x)</b>: 손으로 구한 도함수를 쳐서 겹쳐 보세요. (x^2, sin(x), exp(x), ln(x), sqrt(x), abs(x), pi 사용 · 곱셈은 2x, x*sin(x) 처럼)</li>
+<li>두 손가락(또는 마우스 휠)으로 확대·축소, Shift+드래그로 이동, [처음]으로 되돌리기.</li></ul></details>
+<div class="xp" data-w="explorer" data-opts="{&quot;fn&quot;: &quot;x^3-3x&quot;, &quot;a&quot;: 1, &quot;view&quot;: [-3.2, 3.2], &quot;order&quot;: 2, &quot;height&quot;: 430, &quot;presets&quot;: [[&quot;x³ − 3x&quot;, &quot;x^3-3x&quot;, [-3.2, 3.2], 1], [&quot;x²&quot;, &quot;x^2&quot;, [-4, 4], 1], [&quot;2x − x²&quot;, &quot;2x-x^2&quot;, [-2, 4], 2], [&quot;x³ + 2x² − 1&quot;, &quot;x^3+2x^2-1&quot;, [-4, 3], 1], [&quot;1/(x²+1)&quot;, &quot;1/(x^2+1)&quot;, [-5, 5], 1], [&quot;√x&quot;, &quot;sqrt(x)&quot;, [-0.5, 6], 1], [&quot;sin x&quot;, &quot;sin(x)&quot;, [-7, 7], 1], [&quot;cos x&quot;, &quot;cos(x)&quot;, [-7, 7], 1], [&quot;eˣ&quot;, &quot;exp(x)&quot;, [-3, 3], 0], [&quot;ln x&quot;, &quot;ln(x)&quot;, [0.05, 6], 1], [&quot;k·sin x (k 조절)&quot;, &quot;k*sin(x)&quot;, [-4, 4], 1], [&quot;── 미분 불가능한 예 ──&quot;, &quot;abs(x)&quot;, [-3, 3], 0.5], [&quot;|x|  (꺾인 점)&quot;, &quot;abs(x)&quot;, [-3, 3], 0.5], [&quot;x|x|  (미분 가능)&quot;, &quot;x*abs(x)&quot;, [-3, 3], 0.5], [&quot;∛x  (수직접선)&quot;, &quot;cbrt(x)&quot;, [-3, 3], 0.5], [&quot;x^(2/3)  (뾰족점)&quot;, &quot;x^(2/3)&quot;, [-3, 3], 0.5], [&quot;1/x  (정의 안 됨)&quot;, &quot;1/x&quot;, [-4, 4], 1], [&quot;x²·sin(1/x)  (x=0 확대!)&quot;, &quot;x^2*sin(1/x)&quot;, [-0.6, 0.6], 0.1, [0, 0]]], &quot;controls&quot;: [&quot;preset&quot;, &quot;fn&quot;, &quot;a&quot;, &quot;k&quot;, &quot;secant&quot;, &quot;sign&quot;, &quot;sketch&quot;, &quot;trail&quot;, &quot;answer&quot;, &quot;formula&quot;, &quot;order&quot;, &quot;zoom&quot;, &quot;verdict&quot;], &quot;kslider&quot;: false}"></div>
+</main>
+<script>
+/* 수식 해석 · 기호미분 (외부 라이브러리 없음) */
+var MC=(function(){
+var FN1={sin:Math.sin,cos:Math.cos,tan:Math.tan,asin:Math.asin,acos:Math.acos,atan:Math.atan,
+ sinh:Math.sinh,cosh:Math.cosh,tanh:Math.tanh,asinh:Math.asinh,acosh:Math.acosh,atanh:Math.atanh,
+ exp:Math.exp,ln:Math.log,sqrt:Math.sqrt,cbrt:Math.cbrt,abs:Math.abs,
+ sec:function(x){return 1/Math.cos(x)},csc:function(x){return 1/Math.sin(x)},cot:function(x){return 1/Math.tan(x)}};
+var ALIAS={log:'ln',arcsin:'asin',arccos:'acos',arctan:'atan',arsinh:'asinh',arcosh:'acosh',artanh:'atanh'};
+var CONST={pi:Math.PI,e:Math.E};
+var VARS={x:1,k:1};
+var NAMES=Object.keys(FN1).concat(Object.keys(ALIAS),Object.keys(CONST),Object.keys(VARS)).sort(function(a,b){return b.length-a.length});
+function normalize(s){
+ return String(s).replace(/−|–|—/g,'-').replace(/×|·|⋅/g,'*').replace(/÷/g,'/').replace(/π/g,' pi ')
+  .replace(/²/g,'^2').replace(/³/g,'^3').replace(/√/g,' sqrt ').replace(/∛/g,' cbrt ').replace(/\[/g,'(').replace(/\]/g,')').replace(/\{/g,'(').replace(/\}/g,')');
+}
+function splitIdent(w){
+ if(NAMES.indexOf(w)>=0) return [w];
+ for(var i=0;i<NAMES.length;i++){var n=NAMES[i]; if(w.indexOf(n)===0){var r=splitIdent(w.slice(n.length)); if(r) return [n].concat(r);}}
+ return null;
+}
+function tokenize(src){
+ var s=normalize(src),t=[],i=0,m;
+ while(i<s.length){
+  var c=s[i];
+  if(/\s/.test(c)){i++;continue}
+  if((m=/^(\d+\.?\d*|\.\d+)/.exec(s.slice(i)))){t.push({t:'num',v:parseFloat(m[1])});i+=m[1].length;continue}
+  if((m=/^[A-Za-z]+/.exec(s.slice(i)))){
+   var parts=splitIdent(m[0].toLowerCase()); if(!parts) throw new Error("알 수 없는 문자: "+m[0]);
+   parts.forEach(function(p){t.push({t:'id',v:ALIAS[p]||p})}); i+=m[0].length;continue}
+  if('+-*/^(),'.indexOf(c)>=0){t.push({t:c});i++;continue}
+  if(c==='|'){throw new Error("절댓값은 abs(x) 로 입력하세요")}
+  throw new Error("알 수 없는 기호: "+c);
+ }
+ return t;
+}
+function parse(src){
+ var tk=tokenize(src),p=0;
+ function peek(){return tk[p]} function next(){return tk[p++]}
+ function startsFactor(t){return t&&(t.t==='num'||t.t==='id'||t.t==='(')}
+ function expr(){var n=term();while(peek()&&(peek().t==='+'||peek().t==='-')){var o=next().t;var r=term();n={k:o==='+'?'add':'sub',a:n,b:r}}return n}
+ function term(){var n=unary();
+  for(;;){var t=peek(); if(!t)break;
+   if(t.t==='*'){next();n={k:'mul',a:n,b:unary()}}
+   else if(t.t==='/'){next();n={k:'div',a:n,b:unary()}}
+   else if(startsFactor(t)){n={k:'mul',a:n,b:power()}}
+   else break;}
+  return n}
+ function unary(){var t=peek(); if(t&&t.t==='-'){next();return {k:'neg',a:unary()}} if(t&&t.t==='+'){next();return unary()} return power()}
+ function power(){var b=atom();var t=peek(); if(t&&t.t==='^'){next();var e;var u=peek(); if(u&&u.t==='-'){next();e={k:'neg',a:powerExp()}}else if(u&&u.t==='+'){next();e=powerExp()}else e=powerExp(); return {k:'pow',a:b,b:e}} return b}
+ function powerExp(){return power()}
+ function atom(){var t=next(); if(!t) throw new Error("식이 끝났습니다");
+  if(t.t==='num') return {k:'num',v:t.v};
+  if(t.t==='('){var n=expr(); if(!peek()||peek().t!==')') throw new Error("괄호를 닫아 주세요"); next(); return n}
+  if(t.t==='id'){
+   if(CONST.hasOwnProperty(t.v)) return {k:'const',n:t.v,v:CONST[t.v]};
+   if(VARS[t.v]) return {k:'var',n:t.v};
+   if(FN1[t.v]){var f=t.v; var u=peek();
+     if(u&&u.t==='('){next();var a=expr(); if(!peek()||peek().t!==')') throw new Error("괄호를 닫아 주세요"); next(); return {k:'call',f:f,a:a}}
+     var arg=unaryArg(); return {k:'call',f:f,a:arg}}
+   throw new Error("알 수 없는 이름: "+t.v)}
+  throw new Error("예상하지 못한 기호: "+t.t)}
+ function unaryArg(){var u=peek(); if(u&&u.t==='-'){next();return {k:'neg',a:unaryArg()}}
+  var a=power(); if(a.k==='num'){var n=peek(); if(n&&(n.t==='id'&&!FN1[n.v]||n.t==='(')){a={k:'mul',a:a,b:power()}}} return a}
+ var r=expr(); if(p<tk.length) throw new Error("해석할 수 없는 부분이 있습니다");
+ return r}
+function ratio(b){for(var q=1;q<=25;q++){var pq=b*q;if(Math.abs(pq-Math.round(pq))<1e-9)return {p:Math.round(pq),q:q}}return null}
+function pw(a,b){
+ if(a>=0) return Math.pow(a,b);
+ if(Number.isInteger(b)) return Math.pow(a,b);
+ var r=ratio(b); if(r&&r.q%2===1){var v=Math.pow(-a,b); return (r.p%2===0)?v:-v}
+ return NaN}
+function compile(n){
+ switch(n.k){
+  case 'num': case 'const': var c=n.v; return function(){return c};
+  case 'var': return n.n==='x'?function(x){return x}:function(x,k){return k};
+  case 'neg': var a0=compile(n.a); return function(x,k){return -a0(x,k)};
+  case 'add': var a1=compile(n.a),b1=compile(n.b); return function(x,k){return a1(x,k)+b1(x,k)};
+  case 'sub': var a2=compile(n.a),b2=compile(n.b); return function(x,k){return a2(x,k)-b2(x,k)};
+  case 'mul': var a3=compile(n.a),b3=compile(n.b); return function(x,k){return a3(x,k)*b3(x,k)};
+  case 'div': var a4=compile(n.a),b4=compile(n.b); return function(x,k){return a4(x,k)/b4(x,k)};
+  case 'pow': var a5=compile(n.a),b5=compile(n.b); return function(x,k){return pw(a5(x,k),b5(x,k))};
+  case 'call': var f=FN1[n.f],a6=compile(n.a); return function(x,k){return f(a6(x,k))};
+ }}
+function has(n,name){ if(!n) return false; if(n.k==='var') return n.n===name; return has(n.a,name)||has(n.b,name)}
+var N=function(v){return {k:'num',v:v}};
+function isNum(n,v){return n.k==='num'&&(v===undefined||n.v===v)}
+function numval(n){
+ switch(n.k){case 'num':return n.v;case 'neg':return -numval(n.a);
+  case 'add':return numval(n.a)+numval(n.b);case 'sub':return numval(n.a)-numval(n.b);
+  case 'mul':return numval(n.a)*numval(n.b);case 'div':return numval(n.a)/numval(n.b);}
+ return NaN}
+function ratNode(b){var v=numval(b); if(!isFinite(v)) return b; if(Number.isInteger(v)) return N(v);
+ var r=ratio(Math.abs(v)); if(r&&r.q<=12){var d={k:'div',a:N(r.p),b:N(r.q)}; return v<0?{k:'neg',a:d}:d} return b}
+function simp(n){
+ if(!n||n.k==='num'||n.k==='const'||n.k==='var') return n;
+ if(n.k==='neg'){var a=simp(n.a); if(isNum(a)) return N(-a.v); if(a.k==='neg') return a.a; return {k:'neg',a:a}}
+ if(n.k==='call'){var ar=simp(n.a); if(n.f==='ln'&&ar.k==='const'&&ar.n==='e') return N(1); return {k:'call',f:n.f,a:ar}}
+ var A=simp(n.a),B=simp(n.b);
+ switch(n.k){
+  case 'add': if(isNum(A,0))return B; if(isNum(B,0))return A; if(isNum(A)&&isNum(B))return N(A.v+B.v);
+    if(B.k==='neg') return simp({k:'sub',a:A,b:B.a}); if(A.k==='neg') return simp({k:'sub',a:B,b:A.a}); return {k:'add',a:A,b:B};
+  case 'sub': if(JSON.stringify(A)===JSON.stringify(B)) return N(0); if(isNum(B,0))return A; if(isNum(A,0)) return simp({k:'neg',a:B}); if(isNum(A)&&isNum(B))return N(A.v-B.v);
+    if(B.k==='neg') return simp({k:'add',a:A,b:B.a}); return {k:'sub',a:A,b:B};
+  case 'mul':
+    if(isNum(A,0)||isNum(B,0))return N(0); if(isNum(A,1))return B; if(isNum(B,1))return A;
+    if(isNum(A)&&isNum(B))return N(A.v*B.v);
+    if(isNum(A,-1)) return simp({k:'neg',a:B}); if(isNum(B,-1)) return simp({k:'neg',a:A});
+    if(A.k==='neg') return simp({k:'neg',a:{k:'mul',a:A.a,b:B}}); if(B.k==='neg') return simp({k:'neg',a:{k:'mul',a:A,b:B.a}});
+    if(isNum(B)&&!isNum(A)) return {k:'mul',a:B,b:A};
+    if(isNum(A)&&B.k==='mul'&&isNum(B.a)) return simp({k:'mul',a:N(A.v*B.a.v),b:B.b});
+    return {k:'mul',a:A,b:B};
+  case 'div':
+    if(isNum(A,0))return N(0); if(isNum(B,1))return A; if(JSON.stringify(A)===JSON.stringify(B)&&!isNum(A,0))return N(1); if(isNum(A)&&isNum(B)&&B.v!==0){var q=A.v/B.v; if(Math.abs(q*1e6-Math.round(q*1e6))<1e-6) return N(q)}
+    if(isNum(A)&&A.v<0) return simp({k:'neg',a:{k:'div',a:N(-A.v),b:B}}); if(B.k==='neg') return simp({k:'neg',a:{k:'div',a:A,b:B.a}}); if(A.k==='neg') return simp({k:'neg',a:{k:'div',a:A.a,b:B}});
+    return {k:'div',a:A,b:B};
+  case 'pow':
+    B=ratNode(B);
+    if(isNum(B,1))return A; if(isNum(B,0))return N(1); if(isNum(A,1)) return N(1);
+    if(isNum(A)&&isNum(B)){var r=pw(A.v,B.v); if(isFinite(r)&&Math.abs(r*1e6-Math.round(r*1e6))<1e-6) return N(r)}
+    return {k:'pow',a:A,b:B};
+ }}
+function D(n){ // d/dx
+ switch(n.k){
+  case 'num': case 'const': return N(0);
+  case 'var': return N(n.n==='x'?1:0);
+  case 'neg': return {k:'neg',a:D(n.a)};
+  case 'add': return {k:'add',a:D(n.a),b:D(n.b)};
+  case 'sub': return {k:'sub',a:D(n.a),b:D(n.b)};
+  case 'mul': return {k:'add',a:{k:'mul',a:D(n.a),b:n.b},b:{k:'mul',a:n.a,b:D(n.b)}};
+  case 'div': return {k:'div',a:{k:'sub',a:{k:'mul',a:D(n.a),b:n.b},b:{k:'mul',a:n.a,b:D(n.b)}},b:{k:'pow',a:n.b,b:N(2)}};
+  case 'pow':
+    if(!has(n.b,'x')) return {k:'mul',a:{k:'mul',a:n.b,b:{k:'pow',a:n.a,b:{k:'sub',a:n.b,b:N(1)}}},b:D(n.a)};
+    if(!has(n.a,'x')) return {k:'mul',a:{k:'mul',a:n,b:{k:'call',f:'ln',a:n.a}},b:D(n.b)};
+    return {k:'mul',a:n,b:{k:'add',a:{k:'mul',a:D(n.b),b:{k:'call',f:'ln',a:n.a}},b:{k:'div',a:{k:'mul',a:n.b,b:D(n.a)},b:n.a}}};
+  case 'call':
+    var u=n.a,du=D(u),g;
+    switch(n.f){
+     case 'sin': g={k:'call',f:'cos',a:u};break;
+     case 'cos': g={k:'neg',a:{k:'call',f:'sin',a:u}};break;
+     case 'tan': g={k:'div',a:N(1),b:{k:'pow',a:{k:'call',f:'cos',a:u},b:N(2)}};break;
+     case 'sec': g={k:'mul',a:n,b:{k:'call',f:'tan',a:u}};break;
+     case 'csc': g={k:'neg',a:{k:'mul',a:n,b:{k:'call',f:'cot',a:u}}};break;
+     case 'cot': g={k:'neg',a:{k:'div',a:N(1),b:{k:'pow',a:{k:'call',f:'sin',a:u},b:N(2)}}};break;
+     case 'asin': g={k:'div',a:N(1),b:{k:'call',f:'sqrt',a:{k:'sub',a:N(1),b:{k:'pow',a:u,b:N(2)}}}};break;
+     case 'acos': g={k:'neg',a:{k:'div',a:N(1),b:{k:'call',f:'sqrt',a:{k:'sub',a:N(1),b:{k:'pow',a:u,b:N(2)}}}}};break;
+     case 'atan': g={k:'div',a:N(1),b:{k:'add',a:N(1),b:{k:'pow',a:u,b:N(2)}}};break;
+     case 'sinh': g={k:'call',f:'cosh',a:u};break;
+     case 'cosh': g={k:'call',f:'sinh',a:u};break;
+     case 'tanh': g={k:'div',a:N(1),b:{k:'pow',a:{k:'call',f:'cosh',a:u},b:N(2)}};break;
+     case 'asinh': g={k:'div',a:N(1),b:{k:'call',f:'sqrt',a:{k:'add',a:{k:'pow',a:u,b:N(2)},b:N(1)}}};break;
+     case 'acosh': g={k:'div',a:N(1),b:{k:'call',f:'sqrt',a:{k:'sub',a:{k:'pow',a:u,b:N(2)},b:N(1)}}};break;
+     case 'atanh': g={k:'div',a:N(1),b:{k:'sub',a:N(1),b:{k:'pow',a:u,b:N(2)}}};break;
+     case 'exp': g=n;break;
+     case 'ln': g={k:'div',a:N(1),b:u};break;
+     case 'sqrt': g={k:'div',a:N(1),b:{k:'mul',a:N(2),b:n}};break;
+     case 'cbrt': g={k:'mul',a:{k:'div',a:N(1),b:N(3)},b:{k:'pow',a:u,b:{k:'neg',a:{k:'div',a:N(2),b:N(3)}}}};break;
+     case 'abs': g={k:'div',a:u,b:n};break;
+     default: throw new Error('미분 불가 함수: '+n.f);}
+    return {k:'mul',a:g,b:du};
+ }}
+function diff(n){return simp(D(n))}
+// ---- 출력 ----
+function fmtNum(v){ if(Number.isInteger(v)) return String(v); var s=String(parseFloat(v.toPrecision(6))); return s.replace('-','−')}
+var PREC={add:1,sub:1,mul:2,div:2,neg:3,pow:4};
+function str(n,pp){
+ var s,p;
+ switch(n.k){
+  case 'num': s=fmtNum(n.v); p=n.v<0?3:9; break;
+  case 'const': s=n.n==='pi'?'π':'e'; p=9;break;
+  case 'var': s=n.n;p=9;break;
+  case 'neg': s='−'+str(n.a,n.a.k==='div'?2:3); p=3;break;
+  case 'add': s=str(n.a,1)+' + '+str(n.b,1.5); p=1;break;
+  case 'sub': s=str(n.a,1)+' − '+str(n.b,1.5); p=1;break;
+  case 'mul':
+    var l=str(n.a,2),r=str(n.b,2.5);
+    if(n.a.k==='num'&&(n.b.k==='var'||n.b.k==='call'||n.b.k==='pow'||n.b.k==='const')&&!/^\d/.test(r)) s=l+r;
+    else s=l+'·'+r; p=2;break;
+  case 'div': s=str(n.a,2)+'/'+str(n.b,3.5); p=2;break;
+  case 'pow': s=str(n.a,4.5)+'^'+(n.b.k==='num'&&n.b.v>=0||n.b.k==='var'?str(n.b,0):'('+str(n.b,0)+')'); p=4;break;
+  case 'call': s=n.f+'('+str(n.a,0)+')'; p=9;break;
+ }
+ return p<pp?'('+s+')':s}
+function toStr(n){return str(n,0)}
+function make(src){
+ var ast=parse(src); var f=compile(ast);
+ return {ast:ast,src:src,f:f,usesK:has(ast,'k')}}
+return {parse:parse,compile:compile,diff:diff,simp:simp,toStr:toStr,make:make,has:has,pw:pw};
+})();
+if(typeof module!=='undefined') module.exports=MC;
+
+/* 함수–도함수 탐색기 + 보조 위젯 (외부 라이브러리 없음) */
+var XP=(function(){
+var FONT='"Gulim","굴림","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+var COL=['#0369a3','#c9211e','#8e03a3','#b25a00'];
+var NAMEP=['y = f(x)','f′(x)','f″(x)','f‴(x)'];
+function el(tag,at,kids){var e=document.createElement(tag);if(at)for(var k in at){if(k==='text')e.textContent=at[k];else if(k==='html')e.innerHTML=at[k];else if(k==='style')e.style.cssText=at[k];else e.setAttribute(k,at[k])}
+ (kids||[]).forEach(function(c){if(c)e.appendChild(c)});return e}
+function fm(v,d){d=d||4;if(v===undefined||v===null||!isFinite(v))return '정의 안 됨';if(Math.abs(v)<1e-6)return '0';
+ var s=parseFloat(v.toPrecision(d));var t=String(s);if(/e/.test(t)){t=s.toExponential(2)}return t.replace('-','−')}
+function niceStep(span,n){var raw=span/n,p=Math.pow(10,Math.floor(Math.log(raw)/Math.LN10)),m=raw/p;return (m<1.5?1:m<3.5?2:m<7.5?5:10)*p}
+function sup(t){return t.replace(/\^\(([^()]*)\)/g,'<sup>$1</sup>').replace(/\^(−?[A-Za-z0-9.]+)/g,'<sup>$1</sup>')}
+function sgnTxt(v){return v>0?'+∞':'−∞'}
+
+function Explorer(root,o){
+ var self=this;o=o||{};this.o=o;
+ this.view=(o.view||[-4,4]).slice();this.view0=this.view.slice();
+ this.a=o.a===undefined?1:o.a;this.order=o.order||2;this.k=o.k===undefined?1:o.k;this.h=o.h||0.5;this.hs=1;
+ this.secant=!!o.secant;this.sign=!!o.sign;this.sketchOn=!!o.sketch;this.trailOn=!!o.trail;this.revealed=false;
+ this.AP=o.ansPanel||1;this.showFormula=false;this.sk=[];this.trail=[];this.ans=null;this.ansSrc='';this.H=o.height||380;
+ var C=o.controls||['fn','preset','a','secant','sign','sketch','trail','answer','formula','order','zoom'];
+ this.C=C;
+ var w=el('div',{'class':'xp-wrap'});root.appendChild(w);this.w=w;
+ var bar=el('div',{'class':'xp-bar'});w.appendChild(bar);
+ function row(){var r=el('div',{'class':'xp-row'});bar.appendChild(r);return r}
+ function has(c){return C.indexOf(c)>=0}
+ function btn(txt,fn,cls){var b=el('button',{type:'button','class':'xp-b '+(cls||''),text:txt});b.addEventListener('click',fn);return b}
+ function chk(txt,init,fn){var l=el('label',{'class':'xp-c'});var i=el('input',{type:'checkbox'});i.checked=!!init;i.addEventListener('change',function(){fn(i.checked)});l.appendChild(i);l.appendChild(document.createTextNode(' '+txt));l.cb=i;return l}
+ // 1행: 함수 입력
+ if(has('fn')||has('preset')){
+  var r1=row();
+  if(has('preset')&&o.presets&&o.presets.length){
+   var sel=el('select',{'class':'xp-s'});o.presets.forEach(function(p,i){sel.appendChild(el('option',{value:i,text:p[0]}))});
+   sel.addEventListener('change',function(){var p=o.presets[sel.value];self.setFn(p[1]);if(p[2]){self.view=p[2].slice();self.view0=p[2].slice()}if(p[3]!==undefined)self.a=p[3];self.o.fill=p[4]||null;self.syncA();self.clearMarks();self.draw()});
+   r1.appendChild(sel);this.sel=sel}
+  if(has('fn')){
+   r1.appendChild(el('span',{'class':'xp-l',html:'<i>f</i>(<i>x</i>) ='}));
+   var fi=el('input',{type:'text','class':'xp-t',value:o.fn||'x^3-3x',spellcheck:'false',autocapitalize:'off',autocomplete:'off'});
+   fi.addEventListener('keydown',function(e){if(e.key==='Enter')self.applyFn()});
+   r1.appendChild(fi);this.fi=fi;
+   r1.appendChild(btn('그리기',function(){self.applyFn()},'pri'));
+   this.err=el('span',{'class':'xp-err'});r1.appendChild(this.err)}
+ }
+ // 점 a
+ if(has('a')){
+  var r2=row();r2.appendChild(el('span',{'class':'xp-l',html:'점 <i>a</i>'}));
+  var as=el('input',{type:'range','class':'xp-r',min:this.view[0],max:this.view[1],step:'any'});this.as=as;
+  as.addEventListener('input',function(){self.a=parseFloat(as.value);self.syncA(true);self.trailAdd();self.draw()});
+  r2.appendChild(as);
+  var an=el('input',{type:'number','class':'xp-n',step:'0.1'});this.an=an;
+  an.addEventListener('change',function(){var v=parseFloat(an.value);if(isFinite(v)){self.a=v;self.syncA();self.trailAdd();self.draw()}});
+  r2.appendChild(an);
+  r2.appendChild(btn('◀',function(){self.a-=0.1*(self.view[1]-self.view[0])/8;self.syncA();self.trailAdd();self.draw()},'sm'));
+  r2.appendChild(btn('▶',function(){self.a+=0.1*(self.view[1]-self.view[0])/8;self.syncA();self.trailAdd();self.draw()},'sm'));
+ }
+ // k
+ this.kr=null;
+ if(has('k')||o.kslider){
+  var rk=row();this.kr=rk;rk.appendChild(el('span',{'class':'xp-l',html:o.klabel||'<i>k</i>'}));
+  var kr=o.krange||[-3,3];var ks=el('input',{type:'range','class':'xp-r',min:kr[0],max:kr[1],step:'0.05',value:this.k});this.ks=ks;
+  this.kv=el('span',{'class':'xp-v',text:fm(this.k)});
+  ks.addEventListener('input',function(){self.k=parseFloat(ks.value);self.kv.textContent=fm(self.k);self.draw()});
+  rk.appendChild(ks);rk.appendChild(this.kv)}
+ // 할선
+ if(has('secant')){
+  var r3=row();
+  var cs=chk('할선(두 점을 지나는 직선)',this.secant,function(v){self.secant=v;self.hrow.style.display=v?'':'none';self.draw()});r3.appendChild(cs);this.csec=cs;
+  var hr=el('span',{'class':'xp-hrow',style:this.secant?'':'display:none'});this.hrow=hr;
+  hr.appendChild(el('span',{'class':'xp-l',html:'<i>h</i>'}));
+  var hs=el('input',{type:'range','class':'xp-r xp-rh',min:'-3',max:'0.7',step:'0.01',value:Math.log(this.h)/Math.LN10});this.hsl=hs;
+  hs.addEventListener('input',function(){self.h=Math.pow(10,parseFloat(hs.value));self.draw()});
+  hr.appendChild(hs);this.hv=el('span',{'class':'xp-v'});hr.appendChild(this.hv);
+  hr.appendChild(btn('h 부호 ±',function(){self.hs=-self.hs;self.draw()},'sm'));
+  hr.appendChild(btn('▶ h → 0',function(){self.animH()},'sm'));
+  r3.appendChild(hr)}
+ // 옵션
+ var r4=row(),any4=false;
+ if(has('sign')){var c1=chk('증가·감소 색',this.sign,function(v){self.sign=v;self.draw()});r4.appendChild(c1);any4=true}
+ if(has('sketch')){var c2=chk('f′ 숨기고 직접 그리기',this.sketchOn,function(v){self.sketchOn=v;if(v){self.trailOn=false;self.c3&&(self.c3.cb.checked=false);if(self.order<2)self.setOrder(2)}self.revealed=false;self.updBtns();self.draw()});r4.appendChild(c2);this.c2=c2;any4=true}
+ if(has('trail')){var c3=chk('기울기 자국 남기기',this.trailOn,function(v){self.trailOn=v;if(v){self.sketchOn=false;self.c2&&(self.c2.cb.checked=false);if(self.order<2)self.setOrder(2)}self.revealed=false;self.trail=[];self.updBtns();self.trailAdd();self.draw()});r4.appendChild(c3);this.c3=c3;any4=true}
+ if(has('sketch')||has('trail')){
+  this.bRev=btn('정답 f′ 보기',function(){self.revealed=!self.revealed;self.updBtns();self.draw()},'pri');r4.appendChild(this.bRev);
+  this.bClr=btn('지우기',function(){self.clearMarks();self.draw()},'sm');r4.appendChild(this.bClr);any4=true}
+ if(has('formula')){this.bF=btn('도함수 식 보기',function(){self.showFormula=!self.showFormula;self.bF.textContent=self.showFormula?'식 숨기기':'도함수 식 보기';self.draw()});r4.appendChild(this.bF);any4=true}
+ if(has('order')){
+  var so=el('select',{'class':'xp-s'});[['f 만',1],['f, f′',2],['f, f′, f″',3],['f ~ f‴',4]].forEach(function(p){so.appendChild(el('option',{value:p[1],text:p[0]}))});
+  so.value=this.order;so.addEventListener('change',function(){self.order=parseInt(so.value);self.draw()});r4.appendChild(so);this.so=so;any4=true}
+ if(has('zoom')){
+  r4.appendChild(btn('＋',function(){self.zoomAt(self.a,0.6)},'sm'));
+  r4.appendChild(btn('－',function(){self.zoomAt(self.a,1/0.6)},'sm'));
+  r4.appendChild(btn('◁',function(){self.pan(-0.25)},'sm'));
+  r4.appendChild(btn('▷',function(){self.pan(0.25)},'sm'));
+  r4.appendChild(btn('처음',function(){self.view=self.view0.slice();self.draw()},'sm'));any4=true}
+ if(!any4)bar.removeChild(r4);
+ // 정답 입력
+ if(has('answer')){
+  var r5=row();r5.appendChild(el('span',{'class':'xp-l',html:'내 답 <i>g</i>(<i>x</i>) ='}));
+  var gi=el('input',{type:'text','class':'xp-t',placeholder:'손으로 구한 도함수를 입력 (예: 3x^2-3)',spellcheck:'false',autocapitalize:'off',autocomplete:'off'});this.gi=gi;
+  gi.addEventListener('keydown',function(e){if(e.key==='Enter')self.applyAns()});
+  var ap=el('select',{'class':'xp-s'});[['f′ 와 비교',1],['f″ 와 비교',2],['f‴ 와 비교',3]].forEach(function(p){ap.appendChild(el('option',{value:p[1],text:p[0]}))});ap.value=this.AP;this.apsel=ap;
+  ap.addEventListener('change',function(){self.AP=parseInt(ap.value);if(self.ans&&self.order<self.AP+1)self.setOrder(self.AP+1);self.draw()});
+  r5.appendChild(ap);r5.appendChild(gi);r5.appendChild(btn('겹쳐 보기',function(){self.applyAns()},'pri'));
+  r5.appendChild(btn('지우기',function(){gi.value='';self.applyAns()},'sm'));
+  this.gerr=el('span',{'class':'xp-err'});r5.appendChild(this.gerr)}
+ // 캔버스
+ var cw=el('div',{'class':'xp-cv'});var cv=el('canvas',{});cw.appendChild(cv);w.appendChild(cw);this.cv=cv;cv.style.height=this.H+'px';
+ this.info=el('div',{'class':'xp-info'});w.appendChild(this.info);
+ this.setFn(o.fn||'x^3-3x');this.syncA();this.bind();this.trailAdd();this.updBtns();
+ if(typeof ResizeObserver!=='undefined'){new ResizeObserver(function(){self.draw()}).observe(cw)}
+ this.draw();
+}
+var P=Explorer.prototype;
+P.setFn=function(src){
+ try{var m=MC.make(src);this.m=m;this.asts=[m.ast];this.fns=[m.f];this.src=src;
+  for(var i=1;i<4;i++){try{var d=MC.diff(this.asts[i-1]);this.asts.push(d);this.fns.push(MC.compile(d))}catch(e){this.asts.push(null);this.fns.push(null)}}
+  if(this.err)this.err.textContent='';
+  if(this.fi)this.fi.value=src;
+  if(this.kr)this.kr.style.display=(m.usesK||this.o.kslider)?'':'none';
+  return true}catch(e){if(this.err)this.err.textContent='⚠ '+e.message;return false}};
+P.applyFn=function(){var s=this.fi.value;if(this.setFn(s)){this.clearMarks();this.draw()}};
+P.applyAns=function(){var s=this.gi.value.trim();this.gerr.textContent='';
+ if(!s){this.ans=null;this.draw();return}
+ try{this.ans=MC.make(s);this.ansSrc=s;if(this.order<this.AP+1)this.setOrder(this.AP+1)}catch(e){this.ans=null;this.gerr.textContent='⚠ '+e.message}this.draw()};
+P.setOrder=function(n){this.order=n;if(this.so)this.so.value=n};
+P.clearMarks=function(){this.sk=[];this.trail=[];this.revealed=false;this.updBtns()};
+P.updBtns=function(){if(this.bRev){this.bRev.textContent=this.revealed?'정답 숨기기':'정답 f′ 보기';
+ var on=this.sketchOn||this.trailOn;this.bRev.style.display=on?'':'none';this.bClr.style.display=on?'':'none'}};
+P.hidden=function(){return (this.sketchOn||this.trailOn)&&!this.revealed};
+P.trailAdd=function(){if(!this.trailOn)return;if(!this.verdict(this.a).ok)return;var d=this.dv(this.a);if(!isFinite(d))return;
+ var tol=(this.view[1]-this.view[0])/220;
+ for(var i=0;i<this.trail.length;i++)if(Math.abs(this.trail[i][0]-this.a)<tol)return;this.trail.push([this.a,d])};
+P.syncA=function(fromSlider){
+ if(this.as){var lo=Math.min(this.view0[0],this.a),hi=Math.max(this.view0[1],this.a);this.as.min=lo;this.as.max=hi;if(!fromSlider)this.as.value=this.a}
+ if(this.an)this.an.value=parseFloat(this.a.toFixed(3))};
+P.zoomAt=function(c,f){var v=this.view;this.view=[c+(v[0]-c)*f,c+(v[1]-c)*f];this.draw()};
+P.pan=function(fr){var s=(this.view[1]-this.view[0])*fr;this.view=[this.view[0]+s,this.view[1]+s];this.draw()};
+P.animH=function(){var self=this,t0=null,s0=0.7,s1=-3,dur=4500;
+ if(!this.secant&&this.csec){this.csec.cb.checked=true;this.secant=true;this.hrow.style.display=''}
+ function step(t){if(t0===null)t0=t;var u=Math.min(1,(t-t0)/dur);var s=s0+(s1-s0)*u;self.h=Math.pow(10,s);self.hsl.value=s;self.draw();if(u<1)requestAnimationFrame(step)}
+ requestAnimationFrame(step)};
+P.f=function(x){var F=this.o.fill;if(F&&x===F[0])return F[1];return this.fns[0](x,this.k)};
+P.dv=function(x){var f1=this.fns[1];var v=f1?f1(x,this.k):NaN;
+ if(!isFinite(v)){var e=1e-6*Math.max(1,Math.abs(x));var a=this.f(x+e),b=this.f(x-e);v=(a-b)/(2*e);}return v};
+// ---- 입력 처리 ----
+P.bind=function(){
+ var self=this,cv=this.cv,pts={},mode=null,pinch=null;
+ function pos(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*(self.W/r.width),y:(e.clientY-r.top)*(self.Hh/r.height)}}
+ function panelAt(y){var ph=self.Hh/self.nP;return Math.max(0,Math.min(self.nP-1,Math.floor(y/ph)))}
+ cv.addEventListener('pointerdown',function(e){
+  try{cv.setPointerCapture(e.pointerId)}catch(_){}
+  var p=pos(e);pts[e.pointerId]=p;var ids=Object.keys(pts);
+  if(ids.length===2){mode='pinch';var q=pts[ids[0]],r=pts[ids[1]];pinch={d:Math.abs(q.x-r.x)+1,v:self.view.slice()};return}
+  if((self.sketchOn&&!self.revealed&&self.nP>1&&panelAt(p.y)===1)){mode='sketch';self.lastSk=null;self.addSk(p);self.draw();return}
+  if(e.shiftKey||e.button===2){mode='pan';self.panS={x:p.x,v:self.view.slice()};return}
+  mode='drag';self.setAx(self.px2x(p.x));e.preventDefault()});
+ cv.addEventListener('pointermove',function(e){
+  if(!pts[e.pointerId])return;var p=pos(e);pts[e.pointerId]=p;
+  if(mode==='pinch'){var ids=Object.keys(pts);if(ids.length<2)return;var q=pts[ids[0]],r=pts[ids[1]];
+   var d=Math.abs(q.x-r.x)+1,f=pinch.d/d,c=self.px2x((q.x+r.x)/2),v=pinch.v;
+   self.view=[c+(v[0]-c)*f,c+(v[1]-c)*f];self.draw();return}
+  if(mode==='sketch'){self.addSk(p);self.draw()}
+  else if(mode==='drag'){self.setAx(self.px2x(p.x))}
+  else if(mode==='pan'){var dx=(p.x-self.panS.x)/(self.W-self.padL-self.padR)*(self.panS.v[1]-self.panS.v[0]);self.view=[self.panS.v[0]-dx,self.panS.v[1]-dx];self.draw()}});
+ function up(e){delete pts[e.pointerId];if(Object.keys(pts).length<2&&mode==='pinch')mode=null;if(!Object.keys(pts).length)mode=null}
+ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+ cv.addEventListener('contextmenu',function(e){e.preventDefault()});
+ cv.addEventListener('wheel',function(e){e.preventDefault();var p=pos(e);self.zoomAt(self.px2x(p.x),e.deltaY>0?1.15:1/1.15)},{passive:false});
+};
+P.setAx=function(x){this.a=x;this.syncA();this.trailAdd();this.draw()};
+P.addSk=function(p){var x=this.px2x(p.x),y=this.py2y(1,p.y);
+ if(this.lastSk&&Math.abs(p.x-this.lastSk.x)<1&&Math.abs(p.y-this.lastSk.y)<1)return;this.lastSk=p;this.sk.push([x,y,this.skBreak?1:0]);this.skBreak=false};
+P.px2x=function(px){return this.view[0]+(px-this.padL)/(this.W-this.padL-this.padR)*(this.view[1]-this.view[0])};
+P.x2px=function(x){return this.padL+(x-this.view[0])/(this.view[1]-this.view[0])*(this.W-this.padL-this.padR)};
+P.py2y=function(p,py){var r=this.rng[p],ph=this.Hh/this.nP,top=p*ph+this.padT,h=ph-this.padT-this.padB;return r[1]-(py-top)/h*(r[1]-r[0])};
+P.y2py=function(p,y){var r=this.rng[p],ph=this.Hh/this.nP,top=p*ph+this.padT,h=ph-this.padT-this.padB;return top+(r[1]-y)/(r[1]-r[0])*h};
+// ---- 범위 계산 ----
+P.sample=function(p,N){var fn=this.fns[p],out=new Array(N+1),x0=this.view[0],dx=(this.view[1]-this.view[0])/N;
+ if(!fn){return out}
+ for(var i=0;i<=N;i++){var x=x0+i*dx,y;try{y=fn(x,this.k)}catch(e){y=NaN}out[i]=isFinite(y)?y:NaN}return out};
+P.range=function(ys,p){var v=ys.filter(function(y){return isFinite(y)}).sort(function(a,b){return a-b});
+ if(!v.length)return [-1,1];var n=v.length,lo=v[Math.floor(n*0.03)],hi=v[Math.min(n-1,Math.ceil(n*0.97)-1)];
+ if(p>=1&&this.o.zero!==false){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+ if(hi-lo<1e-9){lo-=1;hi+=1}var pad=(hi-lo)*0.14;return [lo-pad,hi+pad]};
+// ---- 그리기 ----
+P.draw=function(){var self=this;if(this._raf)return;this._raf=requestAnimationFrame(function(){self._raf=0;self.render()})};
+P.render=function(){
+ var cv=this.cv,W=cv.clientWidth,H=this.H;if(!W)return;
+ var r=cv.getBoundingClientRect(),sc=r.width/W||1,dpr=window.devicePixelRatio||1,q=Math.min(3,dpr*sc);
+ var pw=Math.round(W*q),ph=Math.round(H*q);if(cv.width!==pw)cv.width=pw;if(cv.height!==ph)cv.height=ph;
+ var g=cv.getContext('2d');g.setTransform(q,0,0,q,0,0);g.clearRect(0,0,W,H);
+ this.W=W;this.Hh=H;this.padL=46;this.padR=12;this.padT=18;this.padB=18;
+ var nP=this.order;this.nP=nP;var N=Math.max(120,Math.min(1000,Math.floor((W-58)*1.0)));
+ var hidden=this.hidden();var dat=[],rng=[];
+ for(var p=0;p<nP;p++){dat[p]=this.sample(p,N);rng[p]=this.range(dat[p],p)}
+ if(this.o.yr&&this.o.yr[0])rng[0]=this.o.yr[0].slice();
+ if(this.o.yr&&this.o.yr[1]&&nP>1)rng[1]=this.o.yr[1].slice();
+ this.rng=rng;
+ var self=this,ph1=H/nP,pl=this.padL,pr=W-this.padR,x0=this.view[0],x1=this.view[1];
+ var a=this.a,fa=this.f(a);var vd=this.vd=this.verdict(a);
+ g.font='12px '+FONT;g.textBaseline='middle';
+ var hasSign=this.sign&&this.fns[1];
+ for(var p=0;p<nP;p++){
+  var top=p*ph1+this.padT,hh=ph1-this.padT-this.padB,bot=top+hh,rg=rng[p];
+  g.save();g.beginPath();g.rect(pl,top,pr-pl,hh);g.fillStyle='#fffff0';g.fill();g.clip();
+  // 증가·감소 배경
+  if(hasSign){var fd=dat[1]||this.sample(1,N);var prev=null,st=0;
+   for(var i=0;i<=N;i++){var s=isFinite(fd[i])?(fd[i]>0?1:fd[i]<0?-1:0):0;
+    if(s!==prev){if(prev!==null&&prev!==0){g.fillStyle=prev>0?'rgba(24,163,3,.13)':'rgba(201,33,30,.12)';g.fillRect(this.x2px(x0+st*(x1-x0)/N),top,this.x2px(x0+i*(x1-x0)/N)-this.x2px(x0+st*(x1-x0)/N),hh)}prev=s;st=i}}
+   if(prev){g.fillStyle=prev>0?'rgba(24,163,3,.13)':'rgba(201,33,30,.12)';g.fillRect(this.x2px(x0+st*(x1-x0)/N),top,pr-this.x2px(x0+st*(x1-x0)/N),hh)}}
+  // 격자
+  var sx=niceStep(x1-x0,Math.max(4,(pr-pl)/90)),sy=niceStep(rg[1]-rg[0],Math.max(2,hh/50));
+  g.lineWidth=1;g.strokeStyle='#e4e4c4';g.beginPath();
+  for(var x=Math.ceil(x0/sx)*sx;x<=x1+1e-9;x+=sx){var px=Math.round(this.x2px(x))+.5;g.moveTo(px,top);g.lineTo(px,bot)}
+  for(var y=Math.ceil(rg[0]/sy)*sy;y<=rg[1]+1e-9;y+=sy){var py=Math.round(this.y2py(p,y))+.5;g.moveTo(pl,py);g.lineTo(pr,py)}
+  g.stroke();
+  // 축
+  g.strokeStyle='#33003388';g.lineWidth=1.3;g.beginPath();
+  if(x0<0&&x1>0){var ax=Math.round(this.x2px(0))+.5;g.moveTo(ax,top);g.lineTo(ax,bot)}
+  if(rg[0]<0&&rg[1]>0){var ay=Math.round(this.y2py(p,0))+.5;g.moveTo(pl,ay);g.lineTo(pr,ay)}
+  g.stroke();
+  // 곡선 / 숨김
+  var showCurve=!(hidden&&p>=1);
+  if(showCurve&&p<4)this.stroke(g,dat[p],p,N,COL[p],2.4);
+  // 정답 g
+  if(this.ans&&p===this.AP){var gd=new Array(N+1);for(var i=0;i<=N;i++){var y;try{y=this.ans.f(x0+i*(x1-x0)/N,this.k)}catch(e){y=NaN}gd[i]=isFinite(y)?y:NaN}
+   g.setLineDash([7,5]);this.stroke(g,gd,p,N,'#18a303',2.6);g.setLineDash([])}
+  // 그린 스케치
+  if(p===1&&this.sk.length){g.strokeStyle='#6b2fb3';g.lineWidth=2.8;g.lineJoin='round';g.beginPath();
+   for(var i=0;i<this.sk.length;i++){var s=this.sk[i],X=this.x2px(s[0]),Y=this.y2py(1,s[1]);if(i===0)g.moveTo(X,Y);else g.lineTo(X,Y)}g.stroke()}
+  // 자국
+  if(p===1&&this.trailOn){g.fillStyle=COL[1];for(var i=0;i<this.trail.length;i++){var t=this.trail[i];g.beginPath();g.arc(this.x2px(t[0]),this.y2py(1,t[1]),3.6,0,7);g.fill()}}
+  // 접선·할선 (f 패널)
+  if(p===0){
+   var m=this.dv(a);
+   if(vd.ok&&isFinite(fa)&&isFinite(m)){g.strokeStyle='#e08a00';g.lineWidth=2;g.beginPath();
+    var yA=fa+m*(x0-a),yB=fa+m*(x1-a);g.moveTo(pl,this.y2py(0,yA));g.lineTo(pr,this.y2py(0,yB));g.stroke()}
+   if(this.secant){var h=this.h*this.hs,fb=this.f(a+h);
+    if(isFinite(fa)&&isFinite(fb)){var ms=(fb-fa)/h;g.strokeStyle='#c99c00';g.lineWidth=2;g.setLineDash([8,5]);g.beginPath();
+     g.moveTo(pl,this.y2py(0,fa+ms*(x0-a)));g.lineTo(pr,this.y2py(0,fa+ms*(x1-a)));g.stroke();g.setLineDash([]);
+     g.fillStyle='#c99c00';g.beginPath();g.arc(this.x2px(a+h),this.y2py(0,fb),5.5,0,7);g.fill();
+     g.strokeStyle='#c99c0099';g.lineWidth=1;g.beginPath();g.moveTo(this.x2px(a+h),this.y2py(0,fb));g.lineTo(this.x2px(a+h),this.y2py(0,fa));g.lineTo(this.x2px(a),this.y2py(0,fa));g.stroke()}}
+  }
+  g.restore();
+  // 테두리
+  g.strokeStyle='#330033';g.lineWidth=1;g.strokeRect(pl+.5,top+.5,pr-pl-1,hh-1);
+  // 점 a 수직선·점
+  g.save();g.beginPath();g.rect(pl,top,pr-pl,hh);g.clip();
+  var xa=this.x2px(a);g.strokeStyle='#33003366';g.setLineDash([4,4]);g.lineWidth=1.2;g.beginPath();g.moveTo(xa,top);g.lineTo(xa,bot);g.stroke();g.setLineDash([]);
+  var ya=null;
+  if(p===0)ya=fa;else if(p===1&&!hidden&&vd.ok)ya=this.dv(a);else if(p>=2&&this.fns[p]&&!hidden&&vd.ok){try{ya=this.fns[p](a,this.k)}catch(e){}}
+  if(ya!==null&&isFinite(ya)){g.fillStyle=COL[p];g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(xa,this.y2py(p,ya),6.5,0,7);g.fill();g.stroke()}
+  g.restore();
+  // 눈금 글자
+  g.fillStyle='#444';g.textAlign='right';
+  for(var y=Math.ceil(rg[0]/sy)*sy;y<=rg[1]+1e-9;y+=sy){var py=this.y2py(p,y);if(py>top+4&&py<bot-4)g.fillText(fm(Math.abs(y)<sy*1e-6?0:y,3),pl-5,py)}
+  if(p===nP-1){g.textAlign='center';g.textBaseline='top';for(var x=Math.ceil(x0/sx)*sx;x<=x1+1e-9;x+=sx){var px=this.x2px(x);g.fillText(fm(Math.abs(x)<sx*1e-6?0:x,3),px,bot+3)}g.textBaseline='middle'}
+  // 라벨
+  g.textAlign='left';g.font='bold 13px '+FONT;g.fillStyle=COL[p];g.fillText(NAMEP[p],pl+8,top+12);g.font='12px '+FONT;
+  if(hidden&&p===1&&!this.sk.length&&!this.trail.length){g.fillStyle='#6b2fb3';g.font='bold 14px '+FONT;g.textAlign='center';
+   g.fillText(this.sketchOn?'여기에 f′ 의 그래프를 손가락·마우스로 그려 보세요':'점 a 를 움직이면 기울기가 점으로 쌓입니다',(pl+pr)/2,top+hh/2);g.font='12px '+FONT}
+ }
+ this.updInfo(fa);
+};
+P.stroke=function(g,ys,p,N,col,lw){
+ var x0=this.view[0],dx=(this.view[1]-this.view[0])/N,rg=this.rng[p],span=rg[1]-rg[0];
+ g.strokeStyle=col;g.lineWidth=lw;g.lineJoin='round';g.beginPath();var pen=false,py0=null;
+ for(var i=0;i<=N;i++){var y=ys[i];
+  if(!isFinite(y)){pen=false;continue}
+  var X=this.x2px(x0+i*dx),Y=this.y2py(p,y);
+  if(pen&&Math.abs(y-py0)>0.55*span){pen=false}
+  if(!pen){g.moveTo(X,Y);pen=true}else g.lineTo(X,Y);py0=y}
+ g.stroke()};
+// ---- 정보 ----
+P.verdict=function(a){
+ var f=this.f(a);if(!isFinite(f))return {t:'x=a 에서 함수값이 정의되지 않음 → 미분 불가',ok:false,L:NaN,R:NaN};
+ var e1=1e-5*Math.max(1,Math.abs(a)),e2=1e-7*Math.max(1,Math.abs(a));
+ var R1=(this.f(a+e1)-f)/e1,R2=(this.f(a+e2)-f)/e2,L1=(f-this.f(a-e1))/e1,L2=(f-this.f(a-e2))/e2;
+ var jump=Math.max(Math.abs(this.f(a+e2)-f),Math.abs(f-this.f(a-e2))),jump1=Math.max(Math.abs(this.f(a+e1)-f),Math.abs(f-this.f(a-e1)));
+ function inf(s1,s2){return isFinite(s2)&&Math.abs(s2)>60&&Math.abs(s2)>3*Math.abs(s1)}
+ var iR=inf(R1,R2)||(!isFinite(R2)&&isFinite(this.f(a+e2))===false),iL=inf(L1,L2);
+ var out={L:L2,R:R2,iL:iL,iR:iR};
+ if(!isFinite(R2)||!isFinite(L2)){out.t='한쪽에서 함수값이 정의되지 않아 미분 불가';out.ok=false;return out}
+ if(jump>1e-3*(1+Math.abs(f))&&jump>0.5*jump1){out.t='불연속 → 미분 불가';out.ok=false;return out}
+ if(iL||iR){
+  if(iL&&iR&&(L2>0)===(R2>0)){out.t='접선이 수직 (기울기 '+sgnTxt(R2)+') → 미분 불가';out.ok=false;return out}
+  if(iL&&iR){out.t='뾰족점(cusp): 좌 '+sgnTxt(L2)+' / 우 '+sgnTxt(R2)+' → 미분 불가';out.ok=false;return out}
+  out.t='한쪽 기울기가 ±∞ → 미분 불가';out.ok=false;return out}
+ var tol=2e-3*Math.max(1,Math.abs(L2),Math.abs(R2))+1e-4;
+ if(Math.abs(L2-R2)>tol){out.t='좌·우 미분계수가 달라서 꺾인 점 → 미분 불가';out.ok=false;return out}
+ out.t='미분 가능';out.ok=true;return out};
+P.updInfo=function(fa){
+ var a=this.a,hid=this.hidden(),h=[],self=this;
+ var d=this.dv(a),v=this.vd||this.verdict(a);
+ if(this.hv){var hh=this.h*this.hs;this.hv.textContent=fm(hh,3)}
+ h.push('<div class="xp-i1"><b>a</b> = '+fm(a,4)+' , <b><i>f</i>(a)</b> = '+fm(fa,5)+(hid&&this.sketchOn?'':' , <b><i>f</i>′(a)</b> = <span class="xp-hl">'+(v.ok?fm(d,5):(v.iL||v.iR?'존재하지 않음 (∞)':'존재하지 않음'))+'</span>')+'</div>');
+ if(isFinite(fa)&&isFinite(d)&&v.ok&&!(hid&&this.sketchOn)){
+  var z=Math.abs(d)<1e-6,b=fa-d*a,s=(z?'':fm(d,4)+'x')+(z?fm(fa,4):(Math.abs(b)<1e-9?'':(b>0?' + ':' − ')+fm(Math.abs(b),4)));
+  h.push('<div>접선: <span class="xp-t0">y = '+s.replace(/^1x/,'x')+'</span> <small>(= f′(a)(x − a) + f(a))</small>'+(this.secant?'':'')+'</div>');this._tanDone=true}
+ if(this.secant){var hh2=this.h*this.hs;var fb=this.f(a+hh2);var ms=(fb-fa)/hh2;
+  h.push('<div>할선 기울기 = [<i>f</i>(a+<i>h</i>) − <i>f</i>(a)] / <i>h</i> = <b style="color:#c99c00">'+fm(ms,5)+'</b>'+(isFinite(d)?' &nbsp;→ 접선 기울기 <b>'+fm(d,5)+'</b>':'')+'</div>');
+  var rows='<tr><th><i>h</i></th>',vals='<tr><th>차분몫</th>';
+  [1,0.1,0.01,0.001,-0.001,-0.01,-0.1,-1].forEach(function(t){rows+='<td>'+t+'</td>';var q=(self.f(a+t)-fa)/t;vals+='<td>'+fm(q,4)+'</td>'});
+  if(!this.o.notable)h.push('<table class="xp-tb">'+rows+'</tr>'+vals+'</tr></table>')}
+ if(this.o.verdict!==false&&this.C.indexOf('verdict')>=0){
+  h.push('<div class="xp-vd '+(v.ok?'ok':'no')+'">'+(v.ok?'✔ ':'✘ ')+v.t+
+   '<br><small>좌미분계수 ≈ '+(v.iL?sgnTxt(v.L):fm(v.L,4))+' &nbsp; 우미분계수 ≈ '+(v.iR?sgnTxt(v.R):fm(v.R,4))+'</small></div>')}
+ if(this.ans&&this.ans.f){
+  var okc=0,tot=0,x0=this.view[0],x1=this.view[1];
+  for(var i=0;i<=20;i++){var x=x0+(x1-x0)*i/20,y1=this.fns[this.AP]?this.fns[this.AP](x,this.k):NaN,y2;try{y2=this.ans.f(x,this.k)}catch(e){y2=NaN}
+   if(isFinite(y1)&&isFinite(y2)){tot++;if(Math.abs(y1-y2)<1e-6*Math.max(1,Math.abs(y1)))okc++}}
+  var ga;try{ga=this.ans.f(a,this.k)}catch(e){ga=NaN}
+  h.push('<div class="xp-ans">내 답 <i>g</i>(a) = '+fm(ga,5)+' · '+(tot&&okc===tot?'<b style="color:#18a303">내 답의 그래프가 '+['','f′','f″','f‴'][this.AP]+' 와 완전히 겹칩니다</b>':'보이는 구간에서 <b>'+okc+' / '+tot+'</b> 지점이 '+['','f′','f″','f‴'][this.AP]+' 와 일치 — 초록 점선과 빨간 곡선을 비교해 보세요')+'</div>')}
+ if(this.showFormula){
+  var s='';try{for(var i=1;i<this.order+(this.order<2?1:0)&&i<4;i++){s+='<div><i>f'+(i===1?'′':i===2?'″':'‴')+'</i>(x) = '+sup(MC.toStr(this.asts[i]))+'</div>'}
+   if(this.order<2)s='<div><i>f′</i>(x) = '+sup(MC.toStr(this.asts[1]))+'</div>'}catch(e){}
+  h.push('<div class="xp-fm">'+s+'<small>※ 기계가 기호로 미분한 결과입니다. 식의 모양이 손으로 구한 것과 달라도 값이 같으면 같은 함수입니다.</small></div>')}
+ this.info.innerHTML=h.join('')};
+
+/* ---------- 변화율 민감도(탄력) 위젯 ---------- */
+function Elast(root,o){
+ var self=this;this.o=o||{};this.n=2;this.p=-10;
+ var P0=o.cases||[['저항  R ∝ V²',2],['소요 동력  P ∝ V³',3],['배수량 → 길이  L ∝ Δ^(1/3)',1/3]];this.cases=P0;this.n=P0[0][1];
+ var w=el('div',{'class':'xp-wrap'});root.appendChild(w);
+ var bar=el('div',{'class':'xp-bar'});w.appendChild(bar);
+ var r1=el('div',{'class':'xp-row'});bar.appendChild(r1);
+ this.btns=P0.map(function(c,i){var b=el('button',{type:'button','class':'xp-b'+(i===0?' pri':''),text:c[0]});b.addEventListener('click',function(){self.n=c[1];self.btns.forEach(function(x){x.classList.remove('pri')});b.classList.add('pri');self.draw()});r1.appendChild(b);return b});
+ var r2=el('div',{'class':'xp-row'});bar.appendChild(r2);
+ r2.appendChild(el('span',{'class':'xp-l',text:o.xlabel||'속도(원인)를 바꾸면'}));
+ var s=el('input',{type:'range','class':'xp-r',min:-30,max:30,step:1,value:this.p});this.s=s;
+ s.addEventListener('input',function(){self.p=parseInt(s.value);self.draw()});r2.appendChild(s);
+ this.pv=el('span',{'class':'xp-v'});r2.appendChild(this.pv);
+ var cw=el('div',{'class':'xp-cv'});var cv=el('canvas',{});cw.appendChild(cv);w.appendChild(cw);this.cv=cv;this.H=o.height||300;cv.style.height=this.H+'px';
+ this.info=el('div',{'class':'xp-info'});w.appendChild(this.info);
+ if(typeof ResizeObserver!=='undefined')new ResizeObserver(function(){self.draw()}).observe(cw);this.draw()}
+Elast.prototype.draw=function(){var self=this;if(this._r)return;this._r=requestAnimationFrame(function(){self._r=0;self.render()})};
+Elast.prototype.render=function(){
+ var cv=this.cv,W=cv.clientWidth,H=this.H;if(!W)return;var r=cv.getBoundingClientRect(),q=Math.min(3,(window.devicePixelRatio||1)*(r.width/W||1));
+ cv.width=Math.round(W*q);cv.height=Math.round(H*q);var g=cv.getContext('2d');g.setTransform(q,0,0,q,0,0);
+ var n=this.n,p=this.p/100,pl=50,pr=W-14,top=14,bot=H-30,t0=-0.35,t1=0.35;
+ var yv=function(t){return Math.pow(1+t,n)};
+ var lo=Math.min(yv(t0),1+n*t0),hi=Math.max(yv(t1),1+n*t1);lo-=0.05;hi+=0.05;
+ function X(t){return pl+(t-t0)/(t1-t0)*(pr-pl)}function Y(y){return bot-(y-lo)/(hi-lo)*(bot-top)}
+ g.fillStyle='#fffff0';g.fillRect(pl,top,pr-pl,bot-top);g.strokeStyle='#330033';g.strokeRect(pl+.5,top+.5,pr-pl-1,bot-top-1);
+ g.font='12px '+FONT;g.fillStyle='#444';g.textAlign='center';g.textBaseline='top';
+ [-0.3,-0.2,-0.1,0,0.1,0.2,0.3].forEach(function(t){g.fillText((t*100).toFixed(0)+'%',X(t),bot+4);g.strokeStyle='#e4e4c4';g.beginPath();g.moveTo(X(t),top);g.lineTo(X(t),bot);g.stroke()});
+ g.textAlign='right';g.textBaseline='middle';var sy=niceStep(hi-lo,5);
+ for(var y=Math.ceil(lo/sy)*sy;y<hi;y+=sy){g.fillText(((y-1)*100).toFixed(0)+'%',pl-5,Y(y));g.strokeStyle='#e4e4c4';g.beginPath();g.moveTo(pl,Y(y));g.lineTo(pr,Y(y));g.stroke()}
+ g.strokeStyle='#33003388';g.beginPath();g.moveTo(X(0),top);g.lineTo(X(0),bot);g.moveTo(pl,Y(1));g.lineTo(pr,Y(1));g.stroke();
+ g.strokeStyle='#e08a00';g.lineWidth=2;g.beginPath();g.moveTo(X(t0),Y(1+n*t0));g.lineTo(X(t1),Y(1+n*t1));g.stroke();
+ g.strokeStyle='#0369a3';g.lineWidth=2.6;g.beginPath();for(var i=0;i<=120;i++){var t=t0+(t1-t0)*i/120;if(i)g.lineTo(X(t),Y(yv(t)));else g.moveTo(X(t),Y(yv(t)))}g.stroke();
+ g.fillStyle='#0369a3';g.beginPath();g.arc(X(p),Y(yv(p)),6,0,7);g.fill();g.fillStyle='#e08a00';g.beginPath();g.arc(X(p),Y(1+n*p),6,0,7);g.fill();
+ g.textAlign='left';g.font='bold 13px '+FONT;g.fillStyle='#0369a3';g.fillText('정확한 값',pl+8,top+12);g.fillStyle='#e08a00';g.fillText('접선(미분)으로 근사',pl+8,top+30);
+ g.fillStyle='#444';g.textAlign='center';g.textBaseline='top';g.font='12px '+FONT;
+ var ex=(yv(p)-1)*100,ap=n*p*100;
+ this.pv.textContent=(this.p>0?'+':'')+this.p+' %';
+ this.info.innerHTML='<div class="xp-i1">원인이 <b>'+(this.p>0?'+':'')+this.p+'%</b> 변하면 → 결과는 정확히 <b style="color:#0369a3">'+fm(ex,4)+'%</b>, 미분(접선)으로 어림하면 <b style="color:#e08a00">'+fm(ap,4)+'%</b> (차이 '+fm(Math.abs(ex-ap),2)+'%p)</div>'+
+ '<div><small>x = 1 에서 y = x<sup>n</sup> 의 도함수는 n 이므로, 변화가 작을 때 <b>결과의 변화율 ≈ n × 원인의 변화율</b> 입니다. (n = '+fm(n,3)+')</small></div>'};
+
+var TYPES={
+ explorer:function(root,o){return new Explorer(root,o)},
+ elast:function(root,o){return new Elast(root,o)}};
+function initIn(root){
+ var list=root.querySelectorAll('.xp[data-w]');
+ for(var i=0;i<list.length;i++){var e=list[i];if(e.__xp)continue;
+  var o={};try{o=JSON.parse(e.getAttribute('data-opts')||'{}')}catch(err){}
+  var T=TYPES[e.getAttribute('data-w')];if(T){e.__xp=T(e,o)}}}
+return {Explorer:Explorer,Elast:Elast,initIn:initIn,fm:fm};
+})();
+
+(function(){var e=document.querySelector('.xp'),o=JSON.parse(e.getAttribute('data-opts'));
+ if(innerWidth<640){o.height=360;document.querySelector("details.how").open=false}
+ e.setAttribute('data-opts',JSON.stringify(o));XP.initIn(document)})();
+</script></body></html>
